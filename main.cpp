@@ -1,58 +1,41 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
+#include "SDL2/SDL.h"
 
-//Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-bool quit = false;
-SDL_Event e;
-
-int main(int argc, char*args[])
+int main(int argc, char* argv[])
 {
-	//The window we'll be rendering to
-	SDL_Window* window = NULL;
+    if (SDL_Init(SDL_INIT_VIDEO) == 0) {
+        SDL_Window* window = NULL;
+        SDL_Renderer* renderer = NULL;
 
-	//The surface contained by the window
-	 SDL_Surface* screenSurface = NULL;
+        if (SDL_CreateWindowAndRenderer(640, 480, 0, &window, &renderer) == 0) {
+            SDL_bool done = SDL_FALSE;
 
-	//Initialize SDL
-	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-	{
-        	printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
-	}	
-	 else
-	{
-	
-	//Create window
-	window = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-	
-	if(window == NULL)
-	{
-		printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
-	}
-	else
-	{
-	//Get window surface
-	screenSurface = SDL_GetWindowSurface(window);
+            while (!done) {
+                SDL_Event event;
 
-	//Fill the surface white
-	SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-            
-	//Update the surface
-	SDL_UpdateWindowSurface(window);
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+                SDL_RenderClear(renderer);
 
-	//Wait two seconds
-	SDL_Delay(20000);
-	}
-}
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, SDL_ALPHA_OPAQUE);
+                SDL_RenderDrawLine(renderer, 320, 200, 300, 240);
+                SDL_RenderDrawLine(renderer, 300, 240, 340, 240);
+                SDL_RenderDrawLine(renderer, 340, 240, 320, 200);
+                SDL_RenderPresent(renderer);
 
-//Destroy window
-SDL_DestroyWindow(window);
+                while (SDL_PollEvent(&event)) {
+                    if (event.type == SDL_QUIT) {
+                        done = SDL_TRUE;
+                    }
+                }
+            }
+        }
 
-//Quit SDL subsystems
-SDL_Quit();
-
-return 0;
+        if (renderer) {
+            SDL_DestroyRenderer(renderer);
+        }
+        if (window) {
+            SDL_DestroyWindow(window);
+        }
+    }
+    SDL_Quit();
+    return 0;
 }
