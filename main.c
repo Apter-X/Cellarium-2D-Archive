@@ -2,16 +2,17 @@
 #include <stdlib.h>
 
 #include "SDL2/SDL.h"
+#include "header/main.h"
 
-int nav(int x_position, int y_position, int x_limit, int y_limit)
+int nav(int position, int limit, char c)
 {
-
-    for (int i = x_position; i <= x_limit; ++i)
+    for (int i = position; i < limit; i++)
     {
-        return(i);
+        printf("Incrementation %c\n", c);
+        printf("i = %d\n", i);
+        return(++position);
     }
-    return x_position;
-    
+    return (20);
 }
 
 int main(int argc, char* argv[])
@@ -24,11 +25,18 @@ int main(int argc, char* argv[])
         int resolutionL = 640;
         int resolutionH = 480;
 
+        int x_limit = resolutionL - 20;
+        int y_limit = resolutionH - 20;
+
+        int x_matrix[x_limit];
+        int y_matrix[y_limit];
+
         if (SDL_CreateWindowAndRenderer(resolutionL, resolutionH, 0, &window, &renderer) == 0) 
         {
             SDL_bool done = SDL_FALSE;
 
             int x = 300, y = 200, i = 0, j = 0;
+            char a = 'x', b = 'y';
 
             while (!done) 
             {
@@ -46,11 +54,9 @@ int main(int argc, char* argv[])
 
                 SDL_RenderDrawPoint(renderer, x, y);
                 SDL_RenderPresent(renderer);
-
-
                 
-                x = nav(x, y, (resolutionL - 20), (resolutionH - 20));
-                //y = nav(x, y, (resolutionL - 20), (resolutionH - 20));
+                x = nav(x, x_limit, a);
+                y = nav(y, y_limit, b);
 
                 SDL_Delay(20);
 
